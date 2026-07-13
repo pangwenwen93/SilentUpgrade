@@ -1,0 +1,2 @@
+#- File Locator -
+listingFile=../../../../outputs/apk/commonPad/release/output-metadata.json

@@ -1,0 +1,31 @@
+<variant
+    name="commonPadRelease"
+    package="com.le.lhkj.silentupgrade"
+    minSdkVersion="26"
+    targetSdkVersion="35"
+    mergedManifest="build/intermediates/merged_manifest/commonPadRelease/processCommonPadReleaseMainManifest/AndroidManifest.xml"
+    manifestMergeReport="build/outputs/logs/manifest-merger-commonPad-release-report.txt"
+    proguardFiles="build/intermediates/default_proguard_files/global/proguard-android-optimize.txt-8.9.1:proguard-rules.pro"
+    partialResultsDir="build/intermediates/lint_vital_partial_results/commonPadRelease/lintVitalAnalyzeCommonPadRelease/out">
+  <buildFeatures
+      namespacing="REQUIRED"/>
+  <sourceProviders>
+    <sourceProvider
+        manifests="src/main/AndroidManifest.xml"
+        javaDirectories="src/main/java:src/commonPad/java:src/release/java:src/commonPadRelease/java:src/main/kotlin:src/commonPad/kotlin:src/release/kotlin:src/commonPadRelease/kotlin"
+        resDirectories="src/main/res:src/commonPad/res:src/release/res:src/commonPadRelease/res"
+        assetsDirectories="src/main/assets:src/commonPad/assets:src/release/assets:src/commonPadRelease/assets"/>
+  </sourceProviders>
+  <testSourceProviders>
+  </testSourceProviders>
+  <testFixturesSourceProviders>
+  </testFixturesSourceProviders>
+  <artifact
+      classOutputs="build/intermediates/javac/commonPadRelease/compileCommonPadReleaseJavaWithJavac/classes:build/tmp/kotlin-classes/commonPadRelease:build/kotlinToolingMetadata:build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/commonPadRelease/processCommonPadReleaseResources/R.jar"
+      type="MAIN"
+      applicationId="com.le.lhkj.silentupgrade"
+      generatedSourceFolders="build/generated/ap_generated_sources/commonPadRelease/out"
+      generatedResourceFolders="build/generated/res/resValues/commonPad/release"
+      desugaredMethodsFiles="/Users/panghua/.gradle/caches/9.0.0/transforms/b3553625f32f73e2fd2fd0d570c71a8f/transformed/D8BackportedDesugaredMethods.txt">
+  </artifact>
+</variant>

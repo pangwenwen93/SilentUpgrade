@@ -29,6 +29,10 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         private const val TAG = "PH_MainActivity"
+
+        const val EXTRA_APK_PATH = "extra_apk_path"
+        const val EXTRA_PKG_NAME = "extra_pkg_name"
+        const val EXTRA_APP_NAME = "extra_app_name"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,9 +82,9 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val apkPath = intent.getStringExtra(SilentInstaller.EXTRA_APK_PATH)
-        val pkgName = intent.getStringExtra(SilentInstaller.EXTRA_PKG_NAME)
-        val appName = intent.getStringExtra(SilentInstaller.EXTRA_APP_NAME)
+        val apkPath = intent.getStringExtra(EXTRA_APK_PATH)
+        val pkgName = intent.getStringExtra(EXTRA_PKG_NAME)
+        val appName = intent.getStringExtra(EXTRA_APP_NAME)
         if (!apkPath.isNullOrEmpty() && !pkgName.isNullOrEmpty()) {
             silentInstaller.install(apkPath, pkgName, appName)
         } else {

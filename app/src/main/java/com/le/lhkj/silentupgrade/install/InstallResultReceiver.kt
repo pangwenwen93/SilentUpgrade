@@ -24,16 +24,8 @@ class InstallResultReceiver(
             PackageInstaller.STATUS_FAILURE
         )
         val message = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE)
-        val pkgName = intent.getStringExtra(EXTRA_APP_PKG_NAME)
-        val appName = intent.getStringExtra(EXTRA_APP_NAME)
-        val versionCode = intent.getStringExtra(EXTRA_APP_VERSION_CODE)
-        val versionName = intent.getStringExtra(EXTRA_APP_VERSION_NAME)
 
-        Logger.logDebug(
-            TAG,
-            "Install result: status=$status, message=$message, " +
-                    "pkgName=$pkgName, appName=$appName, versionCode=$versionCode, versionName=$versionName"
-        )
+        Logger.logDebug(TAG, "Install result: status=$status, message=$message")
         onResult(status, message)
     }
 
@@ -41,10 +33,5 @@ class InstallResultReceiver(
         private const val TAG = "InstallResultReceiver"
         internal const val ACTION_INSTALL_RESULT =
             "com.le.lhkj.silentupgrade.install.action.INSTALL_RESULT"
-
-        internal const val EXTRA_APP_PKG_NAME = "appPkgName"
-        internal const val EXTRA_APP_VERSION_CODE = "appVersionCode"
-        internal const val EXTRA_APP_VERSION_NAME = "appVersionName"
-        internal const val EXTRA_APP_NAME = "appName"
     }
 }

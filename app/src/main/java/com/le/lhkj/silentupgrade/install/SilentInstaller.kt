@@ -324,10 +324,10 @@ class SilentInstaller(context: Context) {
 
             val intent = Intent(InstallResultReceiver.ACTION_INSTALL_RESULT).apply {
                 setPackage(appContext.packageName)
-                putExtra(InstallResultReceiver.EXTRA_APP_PKG_NAME, pkgName + "")
-                putExtra(InstallResultReceiver.EXTRA_APP_VERSION_CODE, versionCode.toString() + "")
-                putExtra(InstallResultReceiver.EXTRA_APP_VERSION_NAME, versionName + "")
-                putExtra(InstallResultReceiver.EXTRA_APP_NAME, appName + "")
+                putExtra(EXTRA_APP_PKG_NAME, pkgName + "")
+                putExtra(EXTRA_APP_VERSION_CODE, versionCode.toString() + "")
+                putExtra(EXTRA_APP_VERSION_NAME, versionName + "")
+                putExtra(EXTRA_APP_NAME, appName + "")
             }
 
             val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -399,8 +399,9 @@ class SilentInstaller(context: Context) {
         private const val NAME_APK = "base.apk"
         private const val REQUEST_CODE = 1
 
-        const val EXTRA_APK_PATH = "extra_apk_path"
-        const val EXTRA_PKG_NAME = "extra_pkg_name"
-        const val EXTRA_APP_NAME = "extra_app_name"
+        private const val EXTRA_APP_PKG_NAME = "appPkgName"
+        private const val EXTRA_APP_VERSION_CODE = "appVersionCode"
+        private const val EXTRA_APP_VERSION_NAME = "appVersionName"
+        private const val EXTRA_APP_NAME = "appName"
     }
 }

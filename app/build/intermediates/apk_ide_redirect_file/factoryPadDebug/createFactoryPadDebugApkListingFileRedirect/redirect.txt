@@ -1,2 +1,0 @@
-#- File Locator -
-listingFile=../../../../outputs/apk/factoryPad/debug/output-metadata.json

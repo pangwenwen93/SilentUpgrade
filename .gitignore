@@ -1,0 +1,48 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+local.properties
+
+# Android Studio / IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+.navigation/
+captures/
+
+# Android 构建输出
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+bin/
+gen/
+out/
+app/build/
+
+# 本地配置与密钥（切勿提交）
+local.properties
+keystore.properties
+*.jks
+*.keystore
+*.p8
+*.p12
+
+# OS 文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 日志与临时文件
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+
+# 版本控制无关的本地脚本/输出
+outputs/

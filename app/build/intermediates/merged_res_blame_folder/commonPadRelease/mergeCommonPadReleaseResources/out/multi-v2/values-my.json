@@ -4,41 +4,7 @@
             "outputFile": "com.le.lhkj.silentupgrade.app-mergeCommonPadReleaseResources-41:/values-my/values-my.xml",
             "map": [
                 {
-                    "source": "/Users/panghua/.gradle/caches/9.0.0/transforms/257fe1411c5c0592b6f8fd445e6b32e1/transformed/ui-release/res/values-my/values-my.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "105,185,279,367,471,575,658,742,841,930,1012,1099,1185,1260,1349,1426,1499,1572,1653,1719",
-                        "endColumns": "79,93,87,103,103,82,83,98,88,81,86,85,74,88,76,72,72,80,65,125",
-                        "endOffsets": "180,274,362,466,570,653,737,836,925,1007,1094,1180,1255,1344,1421,1494,1567,1648,1714,1840"
-                    },
-                    "to": {
-                        "startLines": "2,10,11,12,13,14,15,16,74,75,76,77,78,79,80,81,82,84,85,86",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "105,927,1021,1109,1213,1317,1400,1484,7962,8051,8133,8220,8306,8381,8470,8547,8620,8794,8875,8941",
-                        "endColumns": "79,93,87,103,103,82,83,98,88,81,86,85,74,88,76,72,72,80,65,125",
-                        "endOffsets": "180,1016,1104,1208,1312,1395,1479,1578,8046,8128,8215,8301,8376,8465,8542,8615,8688,8870,8936,9062"
-                    }
-                },
-                {
-                    "source": "/Users/panghua/.gradle/caches/9.0.0/transforms/0ebb38af6b858f3512a050e3cfe437c7/transformed/foundation-release/res/values-my/values-my.xml",
-                    "from": {
-                        "startLines": "2,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,164",
-                        "endColumns": "108,107",
-                        "endOffsets": "159,267"
-                    },
-                    "to": {
-                        "startLines": "87,88",
-                        "startColumns": "4,4",
-                        "startOffsets": "9067,9176",
-                        "endColumns": "108,107",
-                        "endOffsets": "9171,9279"
-                    }
-                },
-                {
-                    "source": "/Users/panghua/.gradle/caches/9.0.0/transforms/e8b3a182128afb45e2fee34db9c59013/transformed/material3-release/res/values-my/values-my.xml",
+                    "source": "/Users/panghua/.gradle/caches/9.0.0/transforms/64377e92f26a6634adde63f29f50502a/transformed/material3-release/res/values-my/values-my.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -55,7 +21,24 @@
                     }
                 },
                 {
-                    "source": "/Users/panghua/.gradle/caches/9.0.0/transforms/010c292812574710b9fa0636f4decec5/transformed/core-1.16.0/res/values-my/values-my.xml",
+                    "source": "/Users/panghua/.gradle/caches/9.0.0/transforms/b38f043eb831d599a9fef6076104cbfd/transformed/ui-release/res/values-my/values-my.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,185,279,367,471,575,658,742,841,930,1012,1099,1185,1260,1349,1426,1499,1572,1653,1719",
+                        "endColumns": "79,93,87,103,103,82,83,98,88,81,86,85,74,88,76,72,72,80,65,125",
+                        "endOffsets": "180,274,362,466,570,653,737,836,925,1007,1094,1180,1255,1344,1421,1494,1567,1648,1714,1840"
+                    },
+                    "to": {
+                        "startLines": "2,10,11,12,13,14,15,16,74,75,76,77,78,79,80,81,82,84,85,86",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,927,1021,1109,1213,1317,1400,1484,7962,8051,8133,8220,8306,8381,8470,8547,8620,8794,8875,8941",
+                        "endColumns": "79,93,87,103,103,82,83,98,88,81,86,85,74,88,76,72,72,80,65,125",
+                        "endOffsets": "180,1016,1104,1208,1312,1395,1479,1578,8046,8128,8215,8301,8376,8465,8542,8615,8688,8870,8936,9062"
+                    }
+                },
+                {
+                    "source": "/Users/panghua/.gradle/caches/9.0.0/transforms/1bc3bdee15b8004c81c7f8aa33de7041/transformed/core-1.16.0/res/values-my/values-my.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -69,6 +52,23 @@
                         "startOffsets": "185,288,392,495,597,702,808,8693",
                         "endColumns": "102,103,102,101,104,105,118,100",
                         "endOffsets": "283,387,490,592,697,803,922,8789"
+                    }
+                },
+                {
+                    "source": "/Users/panghua/.gradle/caches/9.0.0/transforms/5e3a142d23eec39eab3abe8381666bb7/transformed/foundation-release/res/values-my/values-my.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,164",
+                        "endColumns": "108,107",
+                        "endOffsets": "159,267"
+                    },
+                    "to": {
+                        "startLines": "87,88",
+                        "startColumns": "4,4",
+                        "startOffsets": "9067,9176",
+                        "endColumns": "108,107",
+                        "endOffsets": "9171,9279"
                     }
                 }
             ]

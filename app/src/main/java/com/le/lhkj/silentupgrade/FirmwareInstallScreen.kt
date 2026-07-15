@@ -18,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import com.le.lhkj.silentupgrade.install.FirmwareInstallState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -31,16 +30,16 @@ import androidx.compose.ui.unit.sp
 import com.le.lhkj.silentupgrade.utils.Logger
 
 /**
- * 固件升级界面
+ * 固件升级界面（MVI 中的 View）
  *
- * @param state 当前安装状态枚举
- * @param progress 当前总进度 0..100
+ * @param uiState 界面状态，包含安装阶段、进度与结果
  */
 @Composable
 fun FirmwareInstallScreen(
-    state: FirmwareInstallState = FirmwareInstallState.PREPARING_PACKAGE,
-    progress: Int = 0,
+    uiState: InstallUiState = InstallUiState(),
 ) {
+    val state = uiState.state
+    val progress = uiState.progress
     Box(
         modifier = Modifier.fillMaxSize()
     ) {

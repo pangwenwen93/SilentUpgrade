@@ -45,8 +45,11 @@ SilentUpgrade 是一款 Android 静默升级应用，使用系统级 `PackageIns
 
 ```
 app/src/main/java/com/le/lhkj/silentupgrade/
-├── MainActivity.kt                 # 入口 Activity，读取 intent 参数并启动安装
-├── FirmwareInstallScreen.kt        # Jetpack Compose 安装进度界面
+├── MainActivity.kt                 # MVI View：系统栏设置、观察状态、分发 Intent
+├── FirmwareInstallScreen.kt        # MVI View：Jetpack Compose 安装进度界面
+├── InstallViewModel.kt             # MVI ViewModel：持有 SilentInstaller，产出 InstallUiState
+├── InstallUiState.kt               # MVI Model：不可变界面状态
+├── InstallIntent.kt                # MVI Intent：用户/系统事件
 ├── install/
 │   ├── SilentInstaller.kt          # 静默安装核心实现（PackageInstaller）
 │   ├── InstallResultReceiver.kt    # 安装结果广播接收器（独立类）
@@ -72,6 +75,7 @@ app/src/main/java/com/le/lhkj/silentupgrade/
 6. **InstallResultReceiver**: 必须是独立类，避免持有 `SilentInstaller` 强引用。
 7. **安装参数**: `SilentInstaller.install()` 当前仅需 `apkPath` 与 `pkgName`，`appName` 仅作为广播附加信息保留。
 8. **常量归属**: 启动 `MainActivity` 的公开 intent extras 定义在 `MainActivity` companion object 中；安装结果广播的私有 extras 定义在 `SilentInstaller` 内部。
+9. **MVI 分层**: `MainActivity` / `FirmwareInstallScreen` 为 View，只观察 `InstallUiState` 并分发 `InstallIntent`；`InstallViewModel` 为 ViewModel，是唯一与 `SilentInstaller` 交互的组件；`SilentInstaller` / `InstallResultReceiver` 为底层能力。
 
 ## 安装流程
 

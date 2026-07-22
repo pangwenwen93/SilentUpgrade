@@ -82,18 +82,38 @@ app/src/main/java/com/le/lhkj/silentupgrade/
 1. **PREPARING_PACKAGE**: 校验 APK 文件存在且非空。
 2. **VERIFYING_FILE**: 解析 APK 包信息，校验包名一致且版本号高于已安装版本。
 3. **INSTALLING_NEW_VERSION**: 创建 PackageInstaller Session，拷贝 APK 文件流，提交安装命令。
-4. **STARTING_NEW_VERSION**: 安装成功后启动目标应用。
-5. **FAILED**: 任一环节失败时进入失败状态。
+4. **STARTING_NEW_VERSION**: PackageInstaller 返回成功，或返回失败但系统实际已更新到目标版本，则启动目标应用，随后结束本进程。
+5. **FAILED**: 任一环节失败且实际安装版本未达标时进入失败状态，延迟 5 秒后尝试启动目标应用，随后结束本进程。
 
 ## 调用方式
 
-外部通过启动 `MainActivity` 并携带以下 extras 触发安装：
+支持两种启动方式：
+
+### 1. 外部传入 APK 路径（默认逻辑）
 
 ```kotlin
+val intent = Intent(context, MainActivity::class.java)
 intent.putExtra(MainActivity.EXTRA_APK_PATH, "/path/to/app.apk")
 intent.putExtra(MainActivity.EXTRA_PKG_NAME, "com.example.app")
 intent.putExtra(MainActivity.EXTRA_APP_NAME, "示例应用") // 可选
+context.startActivity(intent)
 ```
+
+若 `EXTRA_APK_PATH` 或 `EXTRA_PKG_NAME` 为空，则直接放弃安装。
+
+### 2. 测试方式：从 assets 内置 APK
+
+将目标 APK 放入 `app/src/main/assets/`（建议命名为 `app.apk`），启动 `MainActivity` 时设置 `EXTRA_TEST_MODE` 为 `true`，会自动拷贝 assets 中的 APK 并执行安装。
+
+```kotlin
+val intent = Intent(context, MainActivity::class.java)
+intent.putExtra(MainActivity.EXTRA_TEST_MODE, true)
+intent.putExtra(MainActivity.EXTRA_PKG_NAME, "com.example.app") // 可选，默认 com.le.lhkj.robot
+intent.putExtra(MainActivity.EXTRA_APP_NAME, "示例应用")         // 可选，默认 ROBOT
+context.startActivity(intent)
+```
+
+测试方式下未传包名/应用名时会使用默认值 `com.le.lhkj.robot` / `ROBOT`。
 
 ## 修改建议
 

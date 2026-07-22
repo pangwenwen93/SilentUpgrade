@@ -27,10 +27,12 @@ class InstallViewModel(application: Application) : AndroidViewModel(application)
     init {
         silentInstaller.setCallback(object : SilentInstaller.InstallCallback {
             override fun onStateChanged(state: FirmwareInstallState) {
+                Logger.logDebug(TAG, "state changed: ${state.name}")
                 _uiState.update { it.copy(state = state) }
             }
 
             override fun onProgressChanged(value: Int) {
+                Logger.logDebug(TAG, "progress changed: $value")
                 _uiState.update { it.copy(progress = value) }
             }
 
@@ -55,10 +57,11 @@ class InstallViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private fun startInstallIfNeeded(intent: InstallIntent.StartInstall) {
+        Logger.logDebug(TAG, "StartInstall intent: apkPath=${intent.apkPath}, pkgName=${intent.pkgName}, appName=${intent.appName}")
         val current = _uiState.value
         // 避免配置变化或重复 intent 导致重复安装
         if (current.state != FirmwareInstallState.PREPARING_PACKAGE || current.progress != 0) {
-            Logger.logDebug(TAG, "Install already started or completed, skip")
+            Logger.logDebug(TAG, "Install already started or completed, currentState=${current.state.name}, progress=${current.progress}, skip")
             return
         }
         silentInstaller.install(intent.apkPath, intent.pkgName, intent.appName)
@@ -66,6 +69,7 @@ class InstallViewModel(application: Application) : AndroidViewModel(application)
 
     override fun onCleared() {
         super.onCleared()
+        Logger.logDebug(TAG, "onCleared")
         silentInstaller.release()
     }
 

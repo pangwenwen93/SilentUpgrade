@@ -25,7 +25,18 @@ class InstallResultReceiver(
         )
         val message = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE)
 
-        Logger.logDebug(TAG, "Install result: status=$status, message=$message")
+        Logger.logDebug(
+            TAG,
+            "Install result: status=$status, message=$message, " +
+                    "SUCCESS=${PackageInstaller.STATUS_SUCCESS}, " +
+                    "BLOCKED=${PackageInstaller.STATUS_FAILURE_BLOCKED}, " +
+                    "ABORTED=${PackageInstaller.STATUS_FAILURE_ABORTED}, " +
+                    "INVALID=${PackageInstaller.STATUS_FAILURE_INVALID}, " +
+                    "CONFLICT=${PackageInstaller.STATUS_FAILURE_CONFLICT}, " +
+                    "STORAGE=${PackageInstaller.STATUS_FAILURE_STORAGE}, " +
+                    "INCOMPATIBLE=${PackageInstaller.STATUS_FAILURE_INCOMPATIBLE}, " +
+                    "TIMEOUT=${PackageInstaller.STATUS_FAILURE_TIMEOUT}"
+        )
         onResult(status, message)
     }
 

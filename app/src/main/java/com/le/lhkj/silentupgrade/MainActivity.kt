@@ -14,8 +14,14 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.le.lhkj.silentupgrade.ui.theme.SilentUpgradeTheme
 import com.le.lhkj.silentupgrade.utils.Logger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.IOException
 
 /**
  * MVI 中的 View
@@ -33,10 +39,14 @@ class MainActivity : ComponentActivity() {
         const val EXTRA_APK_PATH = "extra_apk_path"
         const val EXTRA_PKG_NAME = "extra_pkg_name"
         const val EXTRA_APP_NAME = "extra_app_name"
+
+        private const val DEFAULT_ASSET_APK = "app.apk"
+        private const val UPGRADE_DIR = "upgrade"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Logger.logDebug(TAG, "onCreate")
 
         hideSystemBars()
         setStatusBarDisabled()
@@ -57,15 +67,71 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun dispatchStartInstallFromIntent() {
-        val apkPath = intent.getStringExtra(EXTRA_APK_PATH)
-        val pkgName = intent.getStringExtra(EXTRA_PKG_NAME)
-        val appName = intent.getStringExtra(EXTRA_APP_NAME)
-        if (!apkPath.isNullOrEmpty() && !pkgName.isNullOrEmpty()) {
+        val testMode = false
+        lifecycleScope.launch {
+            Logger.logDebug(TAG, "dispatchStartInstallFromIntent: testMode=$testMode")
+
+            val apkPath = if (testMode) {
+                copyAssetApkToLocal()?.absolutePath
+            } else {
+                intent.getStringExtra(EXTRA_APK_PATH)
+            }
+
+            val pkgName = if (testMode) {
+                intent.getStringExtra(EXTRA_PKG_NAME).takeIf { !it.isNullOrEmpty() } ?: "com.le.lhkj.robot"
+            } else {
+                intent.getStringExtra(EXTRA_PKG_NAME)
+            }
+
+            val appName = if (testMode) {
+                intent.getStringExtra(EXTRA_APP_NAME).takeIf { !it.isNullOrEmpty() } ?: "ROBOT"
+            } else {
+                intent.getStringExtra(EXTRA_APP_NAME).takeIf { !it.isNullOrEmpty() } ?: ""
+            }
+
+            Logger.logDebug(TAG, "resolved: apkPath=$apkPath, pkgName=$pkgName, appName=$appName")
+
+            if (apkPath.isNullOrEmpty() || pkgName.isNullOrEmpty()) {
+                Logger.logError(
+                    TAG,
+                    "Missing required params: " +
+                            if (testMode) "no apk found in assets" else "EXTRA_APK_PATH or EXTRA_PKG_NAME is empty"
+                )
+                return@launch
+            }
+
             viewModel.handleIntent(
                 InstallIntent.StartInstall(apkPath, pkgName, appName)
             )
-        } else {
-            Logger.logError(TAG, "No apk path or package name provided")
+        }
+    }
+
+    private fun findAssetApkName(): String? {
+        val allAssets = assets.list("")?.toList().orEmpty()
+        Logger.logDebug(TAG, "assets list: $allAssets")
+        val candidates = allAssets.filter { it.endsWith(".apk", ignoreCase = true) }
+        Logger.logDebug(TAG, "apk candidates: $candidates")
+        return candidates.firstOrNull { it.equals(DEFAULT_ASSET_APK, ignoreCase = true) }
+            ?: candidates.firstOrNull()
+    }
+
+    private suspend fun copyAssetApkToLocal(): File? {
+        val assetName = findAssetApkName() ?: return null
+        val destFile = File(filesDir, "$UPGRADE_DIR/$assetName")
+        return try {
+            withContext(Dispatchers.IO) {
+                destFile.parentFile?.mkdirs()
+                assets.open(assetName).use { input ->
+                    destFile.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
+                }
+            }
+            Logger.logDebug(TAG, "asset copied: ${destFile.absolutePath}, size=${destFile.length()}")
+            destFile
+        } catch (e: IOException) {
+            Logger.logError(TAG, "copy asset failed: ${e.message}")
+            null
         }
     }
 
@@ -85,6 +151,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        Logger.logDebug(TAG, "onDestroy")
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 

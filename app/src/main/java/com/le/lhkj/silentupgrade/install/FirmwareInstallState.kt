@@ -37,7 +37,7 @@ enum class FirmwareInstallState(
         iconRes = R.drawable.hardware_installing,
     ),
     STARTING_NEW_VERSION(
-        title = "启动新版本",
+        title = "版本升级成功，即将启动",
         description = "启动中...",
         iconRes = R.drawable.hardware_installing,
     ),

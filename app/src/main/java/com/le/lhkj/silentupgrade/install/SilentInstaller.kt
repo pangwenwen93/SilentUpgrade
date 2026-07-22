@@ -11,6 +11,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.Process
 import androidx.core.content.ContextCompat
 import com.le.lhkj.silentupgrade.utils.Logger
 import kotlinx.coroutines.CompletableDeferred
@@ -60,6 +61,7 @@ class SilentInstaller(context: Context) {
     }
 
     init {
+        Logger.logDebug(TAG, "SilentInstaller init")
         val filter = IntentFilter(InstallResultReceiver.ACTION_INSTALL_RESULT)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             appContext.registerReceiver(resultReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
@@ -85,6 +87,7 @@ class SilentInstaller(context: Context) {
      * @param appName 应用名称，用于安装结果广播附加信息
      */
     fun install(apkPath: String, pkgName: String, appName: String? = null) {
+        Logger.logDebug(TAG, "install start: apkPath=$apkPath, pkgName=$pkgName, appName=$appName")
         scope.launch {
             try {
                 emitState(FirmwareInstallState.PREPARING_PACKAGE)
@@ -92,6 +95,7 @@ class SilentInstaller(context: Context) {
 
                 val apkFile = File(apkPath)
                 requireApkExists(apkFile)
+                Logger.logDebug(TAG, "APK file ready: ${apkFile.absolutePath}, size=${apkFile.length()}")
                 emitProgress(5)
 
                 // 2. 校验文件
@@ -107,10 +111,10 @@ class SilentInstaller(context: Context) {
                 val packageInstaller = appContext.packageManager.packageInstaller
                 val sessionParams = createSessionParams(apkFile)
                 val sessionId = createSession(packageInstaller, sessionParams)
+                Logger.logDebug(TAG, "session created: sessionId=$sessionId")
 
                 if (sessionId == -1) {
-                    emitInstallResult(InstallResult.Failure.Generic("create session failed"))
-                    emitState(FirmwareInstallState.FAILED)
+                    installFail(pkgName, InstallResult.Failure.Generic("create session failed"))
                     return@launch
                 }
 
@@ -123,8 +127,7 @@ class SilentInstaller(context: Context) {
                     emitProgress(20 + innerProgress * 70 / 100)
                 }
                 if (!copySuccess) {
-                    emitInstallResult(InstallResult.Failure.Generic("copy install file failed"))
-                    emitState(FirmwareInstallState.FAILED)
+                    installFail(pkgName, InstallResult.Failure.Generic("copy install file failed"))
                     return@launch
                 }
 
@@ -137,25 +140,44 @@ class SilentInstaller(context: Context) {
                     sessionId = sessionId
                 )
 
-                if (result.isSuccess) {
+                // 部分定制系统会返回非 0 状态但 APK 实际已更新，以实际安装版本为准兜底判断
+                val actuallySucceeded = result.isSuccess || isActuallyUpdated(pkgName, versionCode)
+                Logger.logDebug(
+                    TAG,
+                    "result.isSuccess=${result.isSuccess}, actuallySucceeded=$actuallySucceeded, " +
+                            "installedVersion=${getInstalledVersionCode(pkgName)}, expectedVersion=$versionCode"
+                )
+
+                if (actuallySucceeded) {
                     // 4. 启动新版本
-                    emitState(FirmwareInstallState.STARTING_NEW_VERSION)
-                    emitProgress(95)
-                    startInstalledApp(pkgName)
                     delay(800)
                     emitProgress(100)
+                    emitState(FirmwareInstallState.STARTING_NEW_VERSION)
+                    delay(3000)
+                    emitInstallResult(InstallResult.Success(result.message))
                     Logger.logDebug(TAG, "Install completed successfully")
+                    startInstalledApp(pkgName)
                 } else {
-                    emitState(FirmwareInstallState.FAILED)
+                    installFail(pkgName, result)
                 }
-                emitInstallResult(result)
 
             } catch (e: Exception) {
                 Logger.logError(TAG, "Install failed: ${e.message}")
-                emitState(FirmwareInstallState.FAILED)
-                emitInstallResult(InstallResult.Failure.Generic(e.message))
+                installFail(pkgName, InstallResult.Failure.Generic(e.message))
             }
         }
+    }
+
+    private suspend fun installFail(pkgName: String, result: InstallResult) {
+        emitState(FirmwareInstallState.FAILED)
+        emitInstallResult(result)
+        delay(5000)
+        startInstalledApp(pkgName)
+    }
+
+    private fun isActuallyUpdated(pkgName: String, expectedVersionCode: Long): Boolean {
+        val installedVersion = getInstalledVersionCode(pkgName)
+        return installedVersion != null && installedVersion >= expectedVersionCode
     }
 
     private fun requireApkExists(file: File) {
@@ -281,7 +303,7 @@ class SilentInstaller(context: Context) {
             output = session.openWrite(NAME_APK, 0, apkFile.length())
             input = FileInputStream(apkFile)
 
-            var total = 0
+            var total = 0L
             val buffer = ByteArray(BUFFER_SIZE)
             var read: Int
             while (input.read(buffer).also { read = it } != -1) {
@@ -337,6 +359,7 @@ class SilentInstaller(context: Context) {
             }
             val pendingIntent = PendingIntent.getBroadcast(appContext, REQUEST_CODE, intent, flags)
 
+            Logger.logDebug(TAG, "commit install command: pkgName=$pkgName")
             session.commit(pendingIntent.intentSender)
             deferred.await()
         } catch (e: Exception) {
@@ -353,8 +376,8 @@ class SilentInstaller(context: Context) {
     }
 
     /**
-     * 启动已安装的应用。
-     * 安装成功后调用，跳转到目标应用的入口 Activity。
+     * 启动已安装的应用，然后结束本进程。
+     * 安装成功或失败恢复场景下调用，跳转到目标应用的入口 Activity。
      */
     private fun startInstalledApp(pkgName: String) {
         try {
@@ -368,7 +391,14 @@ class SilentInstaller(context: Context) {
             }
         } catch (e: Exception) {
             Logger.logError(TAG, "Failed to start app: ${e.message}")
+        } finally {
+            killSelf()
         }
+    }
+
+    private fun killSelf() {
+        Logger.logDebug(TAG, "killSelf")
+        Process.killProcess(Process.myPid())
     }
 
     private fun emitState(state: FirmwareInstallState) {
@@ -385,6 +415,7 @@ class SilentInstaller(context: Context) {
     }
 
     fun release() {
+        Logger.logDebug(TAG, "SilentInstaller release")
         job.cancel()
         try {
             appContext.unregisterReceiver(resultReceiver)

@@ -62,6 +62,7 @@ android {
 
     buildTypes {
         debug {
+            signingConfig = null
             // 使用所属 productFlavor 的 signingConfig，实现不同渠道不同签名
         }
 

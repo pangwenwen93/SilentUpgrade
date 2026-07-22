@@ -38,11 +38,11 @@ enum class FirmwareInstallState(
     ),
     STARTING_NEW_VERSION(
         title = "版本升级成功，即将启动",
-        description = "启动中...",
+        description = "即将重启...",
         iconRes = R.drawable.hardware_installing,
     ),
     FAILED(
-        title = "失败",
+        title = "版本升级失败",
         description = "安装更新包失败，请稍后重新升级",
         iconRes = R.drawable.hardware_install_fail,
     );

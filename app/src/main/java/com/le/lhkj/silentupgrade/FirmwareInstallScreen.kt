@@ -123,16 +123,7 @@ fun FirmwareInstallScreen(
                                 )
                             }
                         }
-
-                        // 百分比文字
-                        Text(
-                            text = "$progress%",
-                            fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(top = 12.dp)
-                        )
-
-                        Spacer(modifier = Modifier.height(48.dp))
+                        
                     }
                 }
             }
